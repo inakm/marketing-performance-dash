@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyLimit Marketing Performance Dashboard | Lead Analytics &amp; Sales Tracking</title>
+<meta name="description" content="Marketing performance dashboard for tracking leads, DSO remarks, client visits, and sales analytics. Upload Excel reports to generate real-time insights with interactive charts.">
+<meta name="keywords" content="marketing dashboard, sales analytics, lead tracking, DSO remarks, client visits, performance dashboard, Excel analytics, SkyLimit, F9XR">
+<meta name="author" content="Anjani Kumar Mishra">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="language" content="English">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://inakm.github.io/page/projects/dashboards/skylimit-mp-dash.html">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23f3c623'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='50' font-weight='800' font-family='sans-serif' fill='%23000'%3ES%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SkyLimit Marketing Performance Dashboard">
+<meta property="og:description" content="Upload Excel reports and get real-time lead tracking, client visit analytics, and sales performance insights with interactive charts.">
+<meta property="og:site_name" content="SkyLimit Dashboard">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SkyLimit Marketing Performance Dashboard">
+<meta name="twitter:description" content="Upload Excel reports and get real-time lead tracking, client visit analytics, and sales performance insights.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "SkyLimit Marketing Performance Dashboard",
+  "description": "Marketing performance dashboard for tracking leads, DSO remarks, client visits, and sales analytics from Excel data.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript. Client-side only, no data leaves your device.",
+  "author": {
+    "@type": "Person",
+    "name": "Anjani Kumar Mishra",
+    "url": "https://inakm.github.io"
+  }
+}
+</script>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<!-- UPLOAD -->
+<div id="upload-section">
+  <div class="upload-header">
+    <div class="brand-badge"><i class="fa-solid fa-flask"></i> SkyLimit</div>
+    <h1>Marketing <span class="gold">Performance</span> Dashboard</h1>
+    <p>Upload your Excel reports to generate insights</p>
+  </div>
+  <div class="upload-container">
+    <div class="upload-zone" id="akm-zone">
+      <input type="file" id="akm-input" accept=".xlsx,.xls">
+      <button class="remove-file" onclick="removeFile('akm')" title="Remove file">&times;</button>
+      <div class="upload-icon"><i class="fa-solid fa-chart-simple"></i></div>
+      <h3>AKM Marketing Report</h3>
+      <p>Primary data &mdash; priorities, areas, DSO remarks</p>
+      <div class="file-name" id="akm-filename"></div>
+    </div>
+    <div class="upload-zone" id="neha-zone">
+      <input type="file" id="neha-input" accept=".xlsx,.xls">
+      <button class="remove-file" onclick="removeFile('neha')" title="Remove file">&times;</button>
+      <div class="upload-icon"><i class="fa-solid fa-phone"></i></div>
+      <h3>Neha's Remarks File</h3>
+      <p>Secondary &mdash; call remarks &amp; DSO notes</p>
+      <div class="file-name" id="neha-filename"></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center;margin-top:28px">
+    <button id="generate-btn" disabled><i class="fa-solid fa-arrow-right mr-2"></i> Generate Dashboard</button>
+    <button id="clear-btn" class="btn-secondary" onclick="clearAllFiles()" style="display:none"><i class="fa-solid fa-trash-can mr-1.5"></i> Clear Files</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay hidden" id="loading">
+  <div style="text-align:center"><div class="spinner"></div><p style="margin-top:16px;color:var(--text-secondary);font-size:14px;font-weight:600">Processing data...</p></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="dash-header">
+    <div>
+      <div class="brand-badge" style="margin-bottom:6px"><i class="fa-solid fa-chart-line"></i> SkyLimit</div>
+      <h1>Performance Dashboard</h1>
+      <div class="subtitle" id="dash-subtitle"></div>
+    </div>
+    <button class="btn-back" onclick="location.reload()"><i class="fa-solid fa-arrow-left mr-1.5"></i> Upload New Files</button>
+  </div>
+
+  <div class="summary-grid" id="summary-cards"></div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <span class="search-icon"><i class="fa-solid fa-search"></i></span>
+    <input type="text" id="search-input" placeholder="Search customer, remark, area...">
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <!-- Unique Visits KPIs -->
+  <div class="section">
+    <div class="section-title">Unique Client Visits</div>
+    <div class="unique-visits-grid" id="unique-visits"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Person Performance</div>
+    <div class="person-tabs" id="person-tabs"></div>
+    <div id="person-content"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Follow-Up Tracker</div>
+    <div id="followup-section"></div>
+  </div>
+
+  <div class="section" id="neha-section" style="display:none">
+    <div class="section-title">Neha's Remarks Analysis</div>
+    <div id="neha-content"></div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section faq-section">
+    <div class="section-title">How This Dashboard Works</div>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="faq-arrow"><i class="fa-solid fa-chevron-right"></i></span> What files do I upload?</div>
+        <div class="faq-a">Upload the <strong>AKM Marketing Report</strong> (.xlsx) as your primary data source &mdash; it contains priorities, areas, DSO remarks, and contact info. Optionally upload <strong>Neha's Remarks</strong> file for additional call remark analysis and DSO follow-up tracking.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="faq-arrow"><i class="fa-solid fa-chevron-right"></i></span> How is lead status classified?</div>
+        <div class="faq-a">Each DSO remark is automatically scanned for keywords. Leads are categorized as <strong>Hot Lead</strong> (quotation/sample requested), <strong>Follow-up Needed</strong> (tomorrow, will update), <strong>No Requirement</strong>, <strong>Already has Vendor</strong>, <strong>Not Reachable</strong> (busy, meeting, absent), <strong>Not Interested</strong>, or <strong>ABSENT</strong>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="faq-arrow"><i class="fa-solid fa-chevron-right"></i></span> How does the search bar work?</div>
+        <div class="faq-a">Type any client name, area, remark keyword, or person name. Results show matching leads with their DSO remark, Neha's remark (if uploaded), priority level, and status &mdash; all in real time as you type.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="faq-arrow"><i class="fa-solid fa-chevron-right"></i></span> What do the Priority levels mean?</div>
+        <div class="faq-a"><strong>P1 (High)</strong> &mdash; Most promising leads requiring immediate attention. <strong>P2 (Medium)</strong> &mdash; Good potential, needs follow-up. <strong>P3 (Low)</strong> &mdash; Lower priority, future opportunity. <strong>P4 (Very Low)</strong> &mdash; Minimal immediate potential.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="faq-arrow"><i class="fa-solid fa-chevron-right"></i></span> What are "Unique Client Visits"?</div>
+        <div class="faq-a">The count of distinct clients each marketing person visited, deduplicated by client name. This shows actual reach rather than total calls (which may include repeat visits to the same client).</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="faq-arrow"><i class="fa-solid fa-chevron-right"></i></span> How is distance (KM) calculated?</div>
+        <div class="faq-a">Each lead in the AKM report includes a <strong>Km</strong> column representing the distance to that client's area. The dashboard sums these per person and per area to show total travel coverage.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="dash-footer">
+    <div class="footer-squiggle"></div>
+    <div class="footer-content">
+      <div class="footer-privacy">
+        <i class="fa-solid fa-shield mr-2"></i><strong>Your data stays on your device.</strong> All records &mdash; invoices, payments, call logs &mdash; are stored locally in your browser using the Tally ERP data you upload. Nothing is transmitted to any server, collected, or shared. You retain full control and may clear or export your data at any time.
+      </div>
+      <div class="footer-credits">
+        <span>This Dashboard is maintained by <a href="https://inakm.github.io/" target="_blank" rel="noopener">Anjani Kumar Mishra</a></span>
+        <span class="footer-sep">&middot;</span>
+        <span>Built by <a href="https://f9xr.github.io/" target="_blank" rel="noopener">F9XR Team</a></span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
